@@ -7,7 +7,7 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
-namespace CustomerManagement.Web
+namespace CustomerManagement.WebApp
 {
     public partial class CustomerForm : System.Web.UI.Page
     {
@@ -49,4 +49,10 @@ namespace CustomerManagement.Web
 
             Response.Redirect("Customers.aspx");
         }
+
+        protected void Cancel_Click(object sender, EventArgs e)
+        {
+            Response.Redirect("Customers.aspx");
+        }
     }
+}

@@ -1,0 +1,32 @@
+﻿.customers-table th {
+    background-color: var(--color-dark);
+    color: var(--color-white);
+}
+
+.customers-table tbody tr {
+    transition: background-color var(--transition-speed) ease-in-out;
+}
+
+.customers-table tbody tr:hover {
+    background-color: rgba(0, 0, 0, 0.025);
+}
+
+.customers-actions a {
+    margin-right: var(--spacing-xs);
+    transition: opacity var(--transition-speed) ease-in-out,
+                transform var(--transition-speed) ease-in-out;
+}
+
+.customers-actions a:hover {
+    opacity: 0.8;
+    transform: translateY(-1px);
+}
+
+.customers-actions a:focus {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+}
+
+.customers-actions a:active {
+    transform: translateY(0);
+}
