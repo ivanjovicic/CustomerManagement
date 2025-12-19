@@ -23,6 +23,11 @@ namespace CustomerManagement.WebApp
             LoadCustomers();
         }
 
+        protected void ddlStatus_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            LoadCustomers();
+        }
+
         private void LoadCustomers()
         {
             bool? status = null;

@@ -34,7 +34,9 @@
 
             <asp:DropDownList
                 ID="ddlStatus"
-                runat="server">
+                runat="server"
+                AutoPostBack="true"
+                OnSelectedIndexChanged="ddlStatus_SelectedIndexChanged">
 
                 <asp:ListItem Text="All" Value="" />
                 <asp:ListItem Text="Active" Value="true" />
