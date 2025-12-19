@@ -29,7 +29,8 @@
             <asp:TextBox
                 ID="txtSearch"
                 runat="server"
-                Placeholder="Search by name or email" />
+                Placeholder="Search by name or email"
+                oninput="onSearchChanged(this)" />
 
             <asp:DropDownList
                 ID="ddlStatus"
@@ -45,7 +46,7 @@
                 ID="btnSearch"
                 runat="server"
                 Text="Search"
-                OnClick="Search_Click" />
+                OnClick="Search_Click"/>
 
             <asp:Button
                 ID="btnAddCustomer"
@@ -101,5 +102,11 @@
         </asp:GridView>
 
     </main>
-
+    <script type="text/javascript">
+        function onSearchChanged(textbox) {
+            if (textbox.value === "") {
+                location.href = 'Customers.aspx';
+            }
+        }
+    </script>
 </asp:Content>

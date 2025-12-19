@@ -1,6 +1,8 @@
 ﻿using CustomerManagement.Models;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,39 +11,112 @@ namespace CustomerManagement.Data
 {
     public class CustomerRepository : ICustomerRepository
     {
-        private static List<Customer> _customers = new List<Customer>
+        private readonly string _connectionString =
+          ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
+
+        public List<Customer> GetAll()
         {
-            new Customer { Id = 1, FirstName = "Ivan", LastName = "Jovicic", Email = "ivan@test.com", IsActive = true },
-            new Customer { Id = 2, FirstName = "Marko", LastName = "Markovic", Email = "marko@test.com", IsActive = false }
-        };
+            var customers = new List<Customer>();
 
-        public List<Customer> GetAll() => _customers;
+            using (var conn = new SqlConnection(_connectionString))
+            using (var cmd = new SqlCommand(
+                "SELECT Id, FirstName, LastName, Email, IsActive FROM Customers", conn))
+            {
+                conn.Open();
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        customers.Add(new Customer
+                        {
+                            Id = (int)reader["Id"],
+                            FirstName = reader["FirstName"].ToString(),
+                            LastName = reader["LastName"].ToString(),
+                            Email = reader["Email"].ToString(),
+                            IsActive = (bool)reader["IsActive"]
+                        });
+                    }
+                }
+            }
 
-        public Customer GetById(int id) =>
-            _customers.FirstOrDefault(c => c.Id == id);
+            return customers;
+        }
+
+        public Customer GetById(int id)
+        {
+            using (var conn = new SqlConnection(_connectionString))
+            using (var cmd = new SqlCommand(
+                @"SELECT Id, FirstName, LastName, Email, IsActive
+                  FROM Customers WHERE Id = @Id", conn))
+            {
+                cmd.Parameters.AddWithValue("@Id", id);
+                conn.Open();
+
+                using (var reader = cmd.ExecuteReader())
+                {
+                    if (!reader.Read()) return null;
+
+                    return new Customer
+                    {
+                        Id = (int)reader["Id"],
+                        FirstName = reader["FirstName"].ToString(),
+                        LastName = reader["LastName"].ToString(),
+                        Email = reader["Email"].ToString(),
+                        IsActive = (bool)reader["IsActive"]
+                    };
+                }
+            }
+        }
 
         public void Add(Customer customer)
         {
-            customer.Id = _customers.Max(c => c.Id) + 1;
-            _customers.Add(customer);
+            using (var conn = new SqlConnection(_connectionString))
+            using (var cmd = new SqlCommand(
+                @"INSERT INTO Customers (FirstName, LastName, Email, IsActive)
+                  VALUES (@FirstName, @LastName, @Email, @IsActive)", conn))
+            {
+                cmd.Parameters.AddWithValue("@FirstName", customer.FirstName);
+                cmd.Parameters.AddWithValue("@LastName", customer.LastName);
+                cmd.Parameters.AddWithValue("@Email", customer.Email);
+                cmd.Parameters.AddWithValue("@IsActive", customer.IsActive);
+
+                conn.Open();
+                cmd.ExecuteNonQuery();
+            }
         }
 
         public void Update(Customer customer)
         {
-            var existing = GetById(customer.Id);
-            if (existing == null) return;
+            using (var conn = new SqlConnection(_connectionString))
+            using (var cmd = new SqlCommand(
+                @"UPDATE Customers
+                  SET FirstName = @FirstName,
+                      LastName = @LastName,
+                      Email = @Email,
+                      IsActive = @IsActive
+                  WHERE Id = @Id", conn))
+            {
+                cmd.Parameters.AddWithValue("@Id", customer.Id);
+                cmd.Parameters.AddWithValue("@FirstName", customer.FirstName);
+                cmd.Parameters.AddWithValue("@LastName", customer.LastName);
+                cmd.Parameters.AddWithValue("@Email", customer.Email);
+                cmd.Parameters.AddWithValue("@IsActive", customer.IsActive);
 
-            existing.FirstName = customer.FirstName;
-            existing.LastName = customer.LastName;
-            existing.Email = customer.Email;
-            existing.IsActive = customer.IsActive;
+                conn.Open();
+                cmd.ExecuteNonQuery();
+            }
         }
 
         public void Delete(int id)
         {
-            var customer = GetById(id);
-            if (customer != null)
-                _customers.Remove(customer);
+            using (var conn = new SqlConnection(_connectionString))
+            using (var cmd = new SqlCommand(
+                "DELETE FROM Customers WHERE Id = @Id", conn))
+            {
+                cmd.Parameters.AddWithValue("@Id", id);
+                conn.Open();
+                cmd.ExecuteNonQuery();
+            }
         }
     }
 }
