@@ -11,9 +11,17 @@ namespace CustomerManagement.Data
 {
     public class CustomerRepository : ICustomerRepository
     {
-        private readonly string _connectionString =
-          ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
+        private readonly string _connectionString;
 
+        public CustomerRepository(string connectionString)
+        {
+            _connectionString = connectionString;
+        }
+
+        public CustomerRepository()
+            : this(ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString)
+        {
+        }
         public List<Customer> GetAll()
         {
             var customers = new List<Customer>();

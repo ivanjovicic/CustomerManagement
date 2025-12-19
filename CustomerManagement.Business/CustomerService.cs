@@ -12,9 +12,14 @@ namespace CustomerManagement.Business
     {
         private readonly ICustomerRepository _repository;
 
-        public CustomerService()
+        public CustomerService(ICustomerRepository repository)
         {
-            _repository = new CustomerRepository();
+            _repository = repository ?? throw new ArgumentNullException(nameof(repository));
+        }
+
+        public CustomerService()
+          : this(new CustomerRepository())
+        {
         }
 
         public List<Customer> GetCustomers(string searchTerm, bool? isActive)
@@ -24,10 +29,10 @@ namespace CustomerManagement.Business
             if (!string.IsNullOrWhiteSpace(searchTerm))
             {
                 customers = customers
-                    .Where(c =>
-                        c.FirstName.Contains(searchTerm) ||
-                        c.LastName.Contains(searchTerm) ||
-                        c.Email.Contains(searchTerm))
+                     .Where(c =>
+                       c.FirstName.IndexOf(searchTerm, StringComparison.OrdinalIgnoreCase) >= 0 ||
+                       c.LastName.IndexOf(searchTerm, StringComparison.OrdinalIgnoreCase) >= 0 ||
+                       c.Email.IndexOf(searchTerm, StringComparison.OrdinalIgnoreCase) >= 0)
                     .ToList();
             }
 

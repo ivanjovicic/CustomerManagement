@@ -2,5 +2,6 @@
   <Project Path="CustomerManagement.Business/CustomerManagement.Business.csproj" Id="8a5a26c0-b54c-4d55-a43d-a2d4b4accef4" />
   <Project Path="CustomerManagement.Data/CustomerManagement.Data.csproj" Id="813d4b4b-2d45-438c-9084-969237f7738d" />
   <Project Path="CustomerManagement.Models/CustomerManagement.Models.csproj" Id="8818165b-6c40-4d21-bf2a-e9414d292593" />
+  <Project Path="CustomerManagement.Tests/CustomerManagement.Tests.csproj" Id="19a8f455-a51d-4569-9136-041b1f55a9f5" />
   <Project Path="CustomerManagement.WebApp/CustomerManagement.WebApp.csproj" Id="47366c05-6db6-4c5d-9a79-686479c12eba" />
 </Solution>
