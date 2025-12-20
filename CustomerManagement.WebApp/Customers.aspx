@@ -86,12 +86,20 @@ CssClass="load-time" />
                 <asp:HyperLinkField
                     Text="Edit"
                     DataNavigateUrlFields="Id"
-                    DataNavigateUrlFormatString="CustomerForm.aspx?id={0}" />
+                    DataNavigateUrlFormatString="CustomerForm.aspx?id={0}" 
+                    ControlStyle-CssClass="btn-edit"/>
 
-                <asp:ButtonField
-                    Text="Delete"
-                    CommandName="Delete"
-                    ButtonType="Button" />
+               <asp:TemplateField>
+    <ItemTemplate>
+        <asp:LinkButton
+            ID="btnDelete"
+            runat="server"
+            Text="Delete"
+            CommandName="Delete"
+            OnClientClick="return confirm('Are you sure you want to delete this customer?');"
+            CssClass="btn btn-delete btn-sm" />
+    </ItemTemplate>
+</asp:TemplateField>
             </Columns>
 
         </asp:GridView>

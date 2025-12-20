@@ -1,6 +1,7 @@
 ﻿using CustomerManagement.Business;
 using CustomerManagement.Models;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -28,6 +29,14 @@ namespace CustomerManagement.WebApp
             };
 
             await _service.AddAsync(customer);
+
+            foreach (DictionaryEntry item in HttpContext.Current.Cache)
+            {
+                if (item.Key.ToString().StartsWith("customers_"))
+                {
+                    HttpContext.Current.Cache.Remove(item.Key.ToString());
+                }
+            }
 
             Response.Redirect("Customers.aspx", false);
             Context.ApplicationInstance.CompleteRequest();
