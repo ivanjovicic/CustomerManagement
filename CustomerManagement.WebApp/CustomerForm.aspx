@@ -1,4 +1,5 @@
 ﻿<%@ Page
+    Async="true"
     Title="Customer Form"
     Language="C#"
     MasterPageFile="~/Site.Master"
@@ -18,6 +19,7 @@
     ID="BodyContent"
     ContentPlaceHolderID="MainContent"
     runat="server">
+     <h2>Edit Customer</h2>
 
     <div class="customer-form">
         <asp:DropDownList ID="ddlStatus" runat="server" Visible="false" />

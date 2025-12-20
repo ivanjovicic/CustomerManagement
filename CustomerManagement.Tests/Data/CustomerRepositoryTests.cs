@@ -26,7 +26,7 @@ namespace CustomerManagement.Tests.Data
         }
 
         [TestMethod]
-        public void Add_Should_Insert_Customer()
+        public async Task Add_Should_Insert_Customer()
         {
             var customer = new Customer
             {
@@ -36,9 +36,9 @@ namespace CustomerManagement.Tests.Data
                 IsActive = true
             };
 
-            _repository.Add(customer);
+            await _repository.AddAsync(customer);
 
-            var customers = _repository.GetAll();
+            var customers = await _repository.GetAllAsync();
             Assert.IsTrue(customers.Exists(c => c.Email == "test.user@test.com"));
         }
     }

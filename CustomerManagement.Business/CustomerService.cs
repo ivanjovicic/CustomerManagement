@@ -22,10 +22,10 @@ namespace CustomerManagement.Business
         {
         }
 
-        public List<Customer> GetCustomers(string searchTerm, bool? isActive)
+        public async Task<List<Customer>> GetCustomersAsync(string searchTerm, bool? isActive)
         {
-            var customers = _repository.GetAll();
-
+            var customers = await _repository.GetAllAsync();
+             
             if (!string.IsNullOrWhiteSpace(searchTerm))
             {
                 customers = customers
@@ -46,21 +46,21 @@ namespace CustomerManagement.Business
             return customers;
         }
 
-        public Customer GetById(int id) => _repository.GetById(id);
+        public async Task<Customer> GetByIdAsync(int id) => await _repository.GetByIdAsync(id);
 
-        public void Add(Customer customer)
+        public async Task AddAsync(Customer customer)
         {
-            _repository.Add(customer);
+            await _repository.AddAsync(customer);
         }
 
-        public void Update(Customer customer)
+        public async Task UpdateAsync(Customer customer)
         {
-            _repository.Update(customer);
+           await _repository.UpdateAsync(customer);
         }
 
-        public void Delete(int id)
+        public async Task DeleteAsync(int id)
         {
-            _repository.Delete(id);
+           await _repository.DeleteAsync(id);
         }
     }
 }

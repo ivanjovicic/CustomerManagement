@@ -3,6 +3,8 @@ using CustomerManagement.Models;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.UI.WebControls;
 
@@ -10,36 +12,45 @@ namespace CustomerManagement.WebApp
 {
     public partial class Customers : System.Web.UI.Page
     {
-        private CustomerService _service = new CustomerService();
+        private readonly CustomerService _service = new CustomerService();
 
-        protected void Page_Load(object sender, EventArgs e)
+        protected async void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
-                LoadCustomers();
+            {
+                await LoadCustomersAsync();
+            }
         }
 
-        protected void Search_Click(object sender, EventArgs e)
+        protected async void Search_Click(object sender, EventArgs e)
         {
-            LoadCustomers();
+            await LoadCustomersAsync();
         }
 
-        protected void ddlStatus_SelectedIndexChanged(object sender, EventArgs e)
+        protected async void ddlStatus_SelectedIndexChanged(object sender, EventArgs e)
         {
-            LoadCustomers();
+           await LoadCustomersAsync();
         }
 
-        private void LoadCustomers()
+        private async Task LoadCustomersAsync()
         {
+            var stopwatch = Stopwatch.StartNew();
+
             bool? status = null;
-            if (ddlStatus.SelectedValue == "true") status = true;
-            else if (ddlStatus.SelectedValue == "false") status = false;
 
-            string cacheKey = $"customers_{txtSearch.Text}_{status}";
+            if (ddlStatus.SelectedValue == "true")
+                status = true;
+            else if (ddlStatus.SelectedValue == "false")
+                status = false;
+
+            string search = txtSearch.Text.Trim().ToLower();
+            string cacheKey = $"customers_{search}_{status}";
+
             var customers = Cache[cacheKey] as List<Customer>;
 
             if (customers == null)
             {
-                customers = _service.GetCustomers(txtSearch.Text, status);
+                customers = await _service.GetCustomersAsync(search, status);
 
                 Cache.Insert(
                     cacheKey,
@@ -49,16 +60,21 @@ namespace CustomerManagement.WebApp
                     System.Web.Caching.Cache.NoSlidingExpiration);
             }
 
-            gvCustomers.DataSource = _service.GetCustomers(txtSearch.Text, status);
+            gvCustomers.DataSource = customers;
             gvCustomers.DataBind();
+
+            stopwatch.Stop();
+
+            lblLoadTime.Text =
+                $"Loaded {customers.Count} customers in {stopwatch.Elapsed.TotalMilliseconds} ms";
         }
 
-        protected void gvCustomers_RowDeleting(object sender, GridViewDeleteEventArgs e)
+        protected async void gvCustomers_RowDeleting(object sender, GridViewDeleteEventArgs e)
         {
             int customerId = Convert.ToInt32(gvCustomers.DataKeys[e.RowIndex].Value);
-            _service.Delete(customerId);
+            await _service.DeleteAsync(customerId);
 
-            string cacheKeyPattern = $"customers_*";
+           
             foreach (DictionaryEntry item in HttpContext.Current.Cache)
             {
                 if (item.Key.ToString().StartsWith("customers_"))
@@ -67,11 +83,20 @@ namespace CustomerManagement.WebApp
                 }
             }
 
-            LoadCustomers();
+           await LoadCustomersAsync();
         }
+
         protected void AddCustomer_Click(object sender, EventArgs e)
         {
             Response.Redirect("CustomerAdd.aspx");
         }
+
+        protected async void gvCustomers_PageIndexChanging(object sender, GridViewPageEventArgs e)
+        {
+           gvCustomers.PageIndex = e.NewPageIndex;
+           await LoadCustomersAsync();
+        }
+
     }
+
 }

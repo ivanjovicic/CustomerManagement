@@ -20,6 +20,8 @@
 <body>
     <form runat="server">
 
+        <asp:ScriptManager ID="ScriptManager1" runat="server" />
+
         <header class="p-3 bg-dark text-white">
             <h3>Customer Management</h3>
         </header>

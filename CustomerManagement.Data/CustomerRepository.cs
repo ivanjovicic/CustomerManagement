@@ -22,7 +22,7 @@ namespace CustomerManagement.Data
             : this(ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString)
         {
         }
-        public List<Customer> GetAll()
+        public async Task<List<Customer>> GetAllAsync()
         {
             var customers = new List<Customer>();
 
@@ -30,18 +30,19 @@ namespace CustomerManagement.Data
             using (var cmd = new SqlCommand(
                 "SELECT Id, FirstName, LastName, Email, IsActive FROM Customers", conn))
             {
-                conn.Open();
-                using (var reader = cmd.ExecuteReader())
+                await conn.OpenAsync().ConfigureAwait(false);
+
+                using (var reader = await cmd.ExecuteReaderAsync().ConfigureAwait(false))
                 {
-                    while (reader.Read())
+                    while (await reader.ReadAsync().ConfigureAwait(false))
                     {
                         customers.Add(new Customer
                         {
-                            Id = (int)reader["Id"],
-                            FirstName = reader["FirstName"].ToString(),
-                            LastName = reader["LastName"].ToString(),
-                            Email = reader["Email"].ToString(),
-                            IsActive = (bool)reader["IsActive"]
+                            Id = reader.GetInt32(0),
+                            FirstName = reader.GetString(1),
+                            LastName = reader.GetString(2),
+                            Email = reader.GetString(3),
+                            IsActive = reader.GetBoolean(4)
                         });
                     }
                 }
@@ -50,50 +51,53 @@ namespace CustomerManagement.Data
             return customers;
         }
 
-        public Customer GetById(int id)
+
+        public async Task<Customer> GetByIdAsync(int id)
         {
             using (var conn = new SqlConnection(_connectionString))
             using (var cmd = new SqlCommand(
                 @"SELECT Id, FirstName, LastName, Email, IsActive
-                  FROM Customers WHERE Id = @Id", conn))
+          FROM Customers WHERE Id = @Id", conn))
             {
                 cmd.Parameters.AddWithValue("@Id", id);
-                conn.Open();
+                await conn.OpenAsync().ConfigureAwait(false);
 
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = await cmd.ExecuteReaderAsync().ConfigureAwait(false))
                 {
-                    if (!reader.Read()) return null;
+                    if (!await reader.ReadAsync().ConfigureAwait(false))
+                        return null;
 
                     return new Customer
                     {
-                        Id = (int)reader["Id"],
-                        FirstName = reader["FirstName"].ToString(),
-                        LastName = reader["LastName"].ToString(),
-                        Email = reader["Email"].ToString(),
-                        IsActive = (bool)reader["IsActive"]
+                        Id = reader.GetInt32(0),
+                        FirstName = reader.GetString(1),
+                        LastName = reader.GetString(2),
+                        Email = reader.GetString(3),
+                        IsActive = reader.GetBoolean(4)
                     };
                 }
             }
         }
 
-        public void Add(Customer customer)
+
+        public async Task AddAsync(Customer customer)
         {
             using (var conn = new SqlConnection(_connectionString))
             using (var cmd = new SqlCommand(
                 @"INSERT INTO Customers (FirstName, LastName, Email, IsActive)
-                  VALUES (@FirstName, @LastName, @Email, @IsActive)", conn))
+          VALUES (@FirstName, @LastName, @Email, @IsActive)", conn))
             {
                 cmd.Parameters.AddWithValue("@FirstName", customer.FirstName);
                 cmd.Parameters.AddWithValue("@LastName", customer.LastName);
                 cmd.Parameters.AddWithValue("@Email", customer.Email);
                 cmd.Parameters.AddWithValue("@IsActive", customer.IsActive);
 
-                conn.Open();
-                cmd.ExecuteNonQuery();
+                await conn.OpenAsync().ConfigureAwait(false);
+                await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
             }
         }
 
-        public void Update(Customer customer)
+        public async Task UpdateAsync(Customer customer)
         {
             using (var conn = new SqlConnection(_connectionString))
             using (var cmd = new SqlCommand(
@@ -110,20 +114,20 @@ namespace CustomerManagement.Data
                 cmd.Parameters.AddWithValue("@Email", customer.Email);
                 cmd.Parameters.AddWithValue("@IsActive", customer.IsActive);
 
-                conn.Open();
-                cmd.ExecuteNonQuery();
+                await conn.OpenAsync().ConfigureAwait(false);
+                await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
             }
         }
 
-        public void Delete(int id)
+        public async Task DeleteAsync(int id)
         {
             using (var conn = new SqlConnection(_connectionString))
             using (var cmd = new SqlCommand(
                 "DELETE FROM Customers WHERE Id = @Id", conn))
             {
                 cmd.Parameters.AddWithValue("@Id", id);
-                conn.Open();
-                cmd.ExecuteNonQuery();
+                await conn.OpenAsync().ConfigureAwait(false);
+                await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
             }
         }
     }

@@ -1,4 +1,5 @@
 ﻿<%@ Page
+    Async="true"
     Title="Home Page"
     Language="C#"
     MasterPageFile="~/Site.Master"
@@ -24,14 +25,19 @@
 
         <h2>Customers</h2>
 
-        <div style="margin-bottom: 15px;">
+        <div class="customers-toolbar">
 
             <asp:TextBox
                 ID="txtSearch"
                 runat="server"
                 Placeholder="Search by name or email"
-                oninput="onSearchChanged(this)" />
-
+                oninput="onSearchChanged(this)"
+                onkeydown="return event.key !== 'Enter';" />
+            <asp:Button
+                ID="btnSearch"
+                runat="server"
+                Text="Search"
+                OnClick="Search_Click" />
             <asp:DropDownList
                 ID="ddlStatus"
                 runat="server"
@@ -43,51 +49,39 @@
                 <asp:ListItem Text="Inactive" Value="false" />
 
             </asp:DropDownList>
-
-            <asp:Button
-                ID="btnSearch"
-                runat="server"
-                Text="Search"
-                OnClick="Search_Click"/>
-
-            <asp:Button
-                ID="btnAddCustomer"
-                runat="server"
-                Text="Add New Customer"
-                CssClass="btn btn-primary"
-                OnClick="AddCustomer_Click" />
-
         </div>
+       
+        <asp:UpdatePanel ID="upCustomers" runat="server">
+    <ContentTemplate>
 
+            <asp:Label
+ID="lblLoadTime"
+runat="server"
+CssClass="load-time" />
         <asp:GridView
             ID="gvCustomers"
             runat="server"
             AutoGenerateColumns="false"
             CssClass="table table-striped"
-            OnRowDeleting="gvCustomers_RowDeleting"
-            DataKeyNames="Id">
+            DataKeyNames="Id"
+            AllowPaging="true"
+            PageSize="10"
+            OnPageIndexChanging="gvCustomers_PageIndexChanging"
+            OnRowDeleting="gvCustomers_RowDeleting">
+
+              <PagerSettings
+        Mode="NumericFirstLast"
+        FirstPageText="⏮"
+        LastPageText="⏭" />
+
+    <PagerStyle CssClass="pager" HorizontalAlign="Center" />
 
             <Columns>
-
-                <asp:BoundField
-                    DataField="Id"
-                    HeaderText="ID" />
-
-                <asp:BoundField
-                    DataField="FirstName"
-                    HeaderText="First Name" />
-
-                <asp:BoundField
-                    DataField="LastName"
-                    HeaderText="Last Name" />
-
-                <asp:BoundField
-                    DataField="Email"
-                    HeaderText="Email" />
-
-                <asp:CheckBoxField
-                    DataField="IsActive"
-                    HeaderText="Active" />
+                <asp:BoundField DataField="Id" HeaderText="ID" />
+                <asp:BoundField DataField="FirstName" HeaderText="First Name" />
+                <asp:BoundField DataField="LastName" HeaderText="Last Name" />
+                <asp:BoundField DataField="Email" HeaderText="Email" />
+                <asp:CheckBoxField DataField="IsActive" HeaderText="Active" />
 
                 <asp:HyperLinkField
                     Text="Edit"
@@ -98,10 +92,18 @@
                     Text="Delete"
                     CommandName="Delete"
                     ButtonType="Button" />
-
             </Columns>
 
         </asp:GridView>
+          </ContentTemplate>
+</asp:UpdatePanel>
+
+        <asp:Button
+    ID="btnAddCustomer"
+    runat="server"
+    Text="Add New Customer"
+    CssClass="btn btn-primary"
+    OnClick="AddCustomer_Click" />
 
     </main>
     <script type="text/javascript">

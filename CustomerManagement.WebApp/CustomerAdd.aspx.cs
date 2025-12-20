@@ -14,7 +14,7 @@ namespace CustomerManagement.WebApp
     public partial class CustomerAdd : System.Web.UI.Page
     {
         private CustomerService _service = new CustomerService();
-        protected void btnSave_Click(object sender, EventArgs e)
+        protected async void btnSave_Click(object sender, EventArgs e)
         {
             if (!Page.IsValid)
                 return;
@@ -27,14 +27,27 @@ namespace CustomerManagement.WebApp
                 IsActive = bool.Parse(ddlStatus.SelectedValue)
             };
 
-            _service.Add(customer);
+            await _service.AddAsync(customer);
 
-            Response.Redirect("Customers.aspx");
+            Response.Redirect("Customers.aspx", false);
+            Context.ApplicationInstance.CompleteRequest();
         }
 
         protected void btnCancel_Click(object sender, EventArgs e)
         {
             Response.Redirect("Customers.aspx");
+        }
+
+        protected void ValidateFirstLetterUppercase(object source, ServerValidateEventArgs args)
+        {
+            if (string.IsNullOrWhiteSpace(args.Value))
+            {
+                args.IsValid = true;
+                return;
+            }
+
+            char firstChar = args.Value.Trim()[0];
+            args.IsValid = char.IsUpper(firstChar);
         }
     }
 }

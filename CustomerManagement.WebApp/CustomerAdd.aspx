@@ -1,7 +1,16 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="true"
+    Async="true"
     CodeBehind="CustomerAdd.aspx.cs"
     Inherits="CustomerManagement.WebApp.CustomerAdd"
     MasterPageFile="~/Site.Master" %>
+
+<asp:Content
+    ID="HeadContent"
+    ContentPlaceHolderID="HeadContent"
+    runat="server">
+  <link href="/Content/form.css" rel="stylesheet" />
+</asp:Content>
+
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
 
@@ -12,7 +21,7 @@
         runat="server"
         CssClass="text-danger" />
 
-    <div class="form-group">
+    <div class="customer-form">
         <label>First Name</label>
         <asp:TextBox ID="txtFirstName" runat="server" CssClass="form-control" />
         <asp:RequiredFieldValidator
@@ -20,9 +29,18 @@
             ErrorMessage="First Name is required"
             runat="server"
             CssClass="text-danger" />
+
+        <asp:CustomValidator
+            ID="cvFirstName"
+            runat="server"
+            ControlToValidate="txtFirstName"
+            ErrorMessage="First letter must be uppercase"
+            CssClass="text-danger"
+            OnServerValidate="ValidateFirstLetterUppercase"
+            Display="None"/>
     </div>
 
-    <div class="form-group">
+    <div class="customer-form">
         <label>Last Name</label>
         <asp:TextBox ID="txtLastName" runat="server" CssClass="form-control" />
         <asp:RequiredFieldValidator
@@ -30,9 +48,17 @@
             ErrorMessage="Last Name is required"
             runat="server"
             CssClass="text-danger" />
+        <asp:CustomValidator
+            ID="cvLastName"
+            runat="server"
+            ControlToValidate="txtLastName"
+            ErrorMessage="First letter must be uppercase"
+            CssClass="text-danger"
+            OnServerValidate="ValidateFirstLetterUppercase" 
+            Display="None"/>
     </div>
 
-    <div class="form-group">
+    <div class="customer-form">
         <label>Email</label>
         <asp:TextBox ID="txtEmail" runat="server" CssClass="form-control" />
         <asp:RequiredFieldValidator
@@ -48,7 +74,7 @@
             ValidationExpression="^[^@\s]+@[^@\s]+\.[^@\s]+$" />
     </div>
 
-    <div class="form-group">
+    <div class="customer-form">
         <label>Status</label>
         <asp:DropDownList ID="ddlStatus" runat="server" CssClass="form-control">
             <asp:ListItem Text="Active" Value="true" />

@@ -3,6 +3,7 @@ using CustomerManagement.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -13,12 +14,12 @@ namespace CustomerManagement.WebApp
     {
         private CustomerService _service = new CustomerService();
 
-        protected void Page_Load(object sender, EventArgs e)
+        protected async void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack && Request.QueryString["id"] != null)
             {
                 int id = int.Parse(Request.QueryString["id"]);
-                var customer = _service.GetById(id);
+                var customer = await _service.GetByIdAsync(id);
 
                 txtFirstName.Text = customer.FirstName;
                 txtLastName.Text = customer.LastName;
@@ -27,7 +28,7 @@ namespace CustomerManagement.WebApp
             }
         }
 
-        protected void Save_Click(object sender, EventArgs e)
+        protected async void Save_Click(object sender, EventArgs e)
         {
             var customer = new Customer
             {
@@ -40,11 +41,11 @@ namespace CustomerManagement.WebApp
             if (Request.QueryString["id"] != null)
             {
                 customer.Id = int.Parse(Request.QueryString["id"]);
-                _service.Update(customer);
+               await _service.UpdateAsync(customer);
             }
             else
             {
-                _service.Add(customer);
+                await _service.AddAsync(customer);
             }
 
             Response.Redirect("Customers.aspx");

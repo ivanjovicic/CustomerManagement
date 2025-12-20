@@ -1,4 +1,12 @@
-﻿.customer-form .form-group {
+﻿.customer-form {
+    max-width: 400px; 
+}
+
+.customer-form .form-control {
+    width: 100%;
+}
+
+.customer-form .form-group {
     margin-bottom: var(--spacing-md);
 }
 
