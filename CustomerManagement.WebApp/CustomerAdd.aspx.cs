@@ -30,13 +30,8 @@ namespace CustomerManagement.WebApp
 
             await _service.AddAsync(customer);
 
-            foreach (DictionaryEntry item in HttpContext.Current.Cache)
-            {
-                if (item.Key.ToString().StartsWith("customers_"))
-                {
-                    HttpContext.Current.Cache.Remove(item.Key.ToString());
-                }
-            }
+       
+            CacheHelper.ClearCustomersCache();
 
             Response.Redirect("Customers.aspx", false);
             Context.ApplicationInstance.CompleteRequest();

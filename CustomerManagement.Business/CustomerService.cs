@@ -3,7 +3,6 @@ using CustomerManagement.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace CustomerManagement.Business
@@ -18,21 +17,21 @@ namespace CustomerManagement.Business
         }
 
         public CustomerService()
-          : this(new CustomerRepository())
+            : this(new CustomerRepository())
         {
         }
 
         public async Task<List<Customer>> GetCustomersAsync(string searchTerm, bool? isActive)
         {
             var customers = await _repository.GetAllAsync();
-             
+
             if (!string.IsNullOrWhiteSpace(searchTerm))
             {
                 customers = customers
-                     .Where(c =>
-                       c.FirstName.IndexOf(searchTerm, StringComparison.OrdinalIgnoreCase) >= 0 ||
-                       c.LastName.IndexOf(searchTerm, StringComparison.OrdinalIgnoreCase) >= 0 ||
-                       c.Email.IndexOf(searchTerm, StringComparison.OrdinalIgnoreCase) >= 0)
+                    .Where(c =>
+                        c.FirstName.IndexOf(searchTerm, StringComparison.OrdinalIgnoreCase) >= 0 ||
+                        c.LastName.IndexOf(searchTerm, StringComparison.OrdinalIgnoreCase) >= 0 ||
+                        c.Email.IndexOf(searchTerm, StringComparison.OrdinalIgnoreCase) >= 0)
                     .ToList();
             }
 
@@ -55,12 +54,12 @@ namespace CustomerManagement.Business
 
         public async Task UpdateAsync(Customer customer)
         {
-           await _repository.UpdateAsync(customer);
+            await _repository.UpdateAsync(customer);
         }
 
         public async Task DeleteAsync(int id)
         {
-           await _repository.DeleteAsync(id);
+            await _repository.DeleteAsync(id);
         }
     }
 }

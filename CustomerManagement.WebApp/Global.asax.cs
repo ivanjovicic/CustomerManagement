@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Web;
 using System.Web.UI;
 
 namespace CustomerManagement.WebApp
@@ -9,16 +10,6 @@ namespace CustomerManagement.WebApp
         protected void Application_Start(object sender, EventArgs e)
         {
             ValidationSettings.UnobtrusiveValidationMode = UnobtrusiveValidationMode.None;
-            //ScriptManager.ScriptResourceMapping.AddDefinition(
-            //   "jquery",
-            //   new ScriptResourceDefinition
-            //   {
-            //       Path = "~/Scripts/jquery-3.7.1.min.js",
-            //       DebugPath = "~/Scripts/jquery-3.7.1.js",
-            //       CdnPath = "https://code.jquery.com/jquery-3.7.1.min.js",
-            //       CdnDebugPath = "https://code.jquery.com/jquery-3.7.1.js",
-            //       CdnSupportsSecureConnection = true
-            //   });
         }
 
         protected void Session_Start(object sender, EventArgs e)
@@ -38,7 +29,14 @@ namespace CustomerManagement.WebApp
 
         protected void Application_Error(object sender, EventArgs e)
         {
+            var exception = Server.GetLastError();
 
+            System.Diagnostics.Debug.WriteLine("UNHANDLED ERROR: " + exception);
+
+            HttpContext.Current.Items["LastError"] = exception;
+         
+            Server.ClearError();
+            Response.Redirect("~/Error.aspx");
         }
 
         protected void Session_End(object sender, EventArgs e)

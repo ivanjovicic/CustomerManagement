@@ -18,18 +18,39 @@ namespace CustomerManagement.WebApp
         {
             if (!IsPostBack)
             {
-                await LoadCustomersAsync();
+                try
+                {
+                    await LoadCustomersAsync();
+                }
+                catch (Exception ex)
+                {
+                    HandleError(ex, "Error loading customers on initial page load.");
+                }
             }
         }
 
         protected async void Search_Click(object sender, EventArgs e)
         {
-            await LoadCustomersAsync();
+            try
+            {
+                await LoadCustomersAsync();
+            }
+            catch (Exception ex)
+            {
+                HandleError(ex, "Error loading customers on search.");
+            }
         }
 
         protected async void ddlStatus_SelectedIndexChanged(object sender, EventArgs e)
         {
-           await LoadCustomersAsync();
+            try
+            {
+                await LoadCustomersAsync();
+            }
+            catch (Exception ex)
+            {
+                HandleError(ex, "Error loading customers on status filter change.");
+            }
         }
 
         private async Task LoadCustomersAsync()
@@ -46,44 +67,53 @@ namespace CustomerManagement.WebApp
             string search = txtSearch.Text.Trim().ToLower();
             string cacheKey = $"customers_{search}_{status}";
 
-            var customers = Cache[cacheKey] as List<Customer>;
-
-            if (customers == null)
+            try
             {
-                customers = await _service.GetCustomersAsync(search, status);
+                var customers = Cache[cacheKey] as List<Customer>;
 
-                Cache.Insert(
-                    cacheKey,
-                    customers,
-                    null,
-                    DateTime.Now.AddMinutes(5),
-                    System.Web.Caching.Cache.NoSlidingExpiration);
+                if (customers == null)
+                {
+                    customers = await _service.GetCustomersAsync(search, status);
+
+                    Cache.Insert(
+                        cacheKey,
+                        customers,
+                        null,
+                        DateTime.Now.AddMinutes(5),
+                        System.Web.Caching.Cache.NoSlidingExpiration);
+                }
+
+                gvCustomers.DataSource = customers;
+                gvCustomers.DataBind();
+
+                stopwatch.Stop();
+
+                lblLoadTime.Text =
+                    $"Loaded {customers.Count} customers in {stopwatch.Elapsed.TotalMilliseconds} ms";
             }
-
-            gvCustomers.DataSource = customers;
-            gvCustomers.DataBind();
-
-            stopwatch.Stop();
-
-            lblLoadTime.Text =
-                $"Loaded {customers.Count} customers in {stopwatch.Elapsed.TotalMilliseconds} ms";
+            catch (Exception ex)
+            {
+                stopwatch.Stop();
+                HandleError(ex, "Error loading customers.");
+                lblLoadTime.Text = "An error occurred while loading customers.";
+            }
         }
 
         protected async void gvCustomers_RowDeleting(object sender, GridViewDeleteEventArgs e)
         {
-            int customerId = Convert.ToInt32(gvCustomers.DataKeys[e.RowIndex].Value);
-            await _service.DeleteAsync(customerId);
-
-           
-            foreach (DictionaryEntry item in HttpContext.Current.Cache)
+            try
             {
-                if (item.Key.ToString().StartsWith("customers_"))
-                {
-                    HttpContext.Current.Cache.Remove(item.Key.ToString());
-                }
-            }
+                int customerId = Convert.ToInt32(gvCustomers.DataKeys[e.RowIndex].Value);
+                await _service.DeleteAsync(customerId);
 
-           await LoadCustomersAsync();
+                CacheHelper.ClearCustomersCache();
+
+                await LoadCustomersAsync();
+            }
+            catch (Exception ex)
+            {
+                HandleError(ex, "Error deleting customer.");
+            }
         }
 
         protected void AddCustomer_Click(object sender, EventArgs e)
@@ -93,10 +123,25 @@ namespace CustomerManagement.WebApp
 
         protected async void gvCustomers_PageIndexChanging(object sender, GridViewPageEventArgs e)
         {
-           gvCustomers.PageIndex = e.NewPageIndex;
-           await LoadCustomersAsync();
+            try
+            {
+                gvCustomers.PageIndex = e.NewPageIndex;
+                await LoadCustomersAsync();
+            }
+            catch (Exception ex)
+            {
+                HandleError(ex, "Error changing page index for customers grid.");
+            }
         }
 
+        private void HandleError(Exception ex, string message)
+        {
+            // Centralized place to log and optionally show a friendly message.
+            Debug.WriteLine($"{message} {ex}");
+
+            // Optionally store for Global.asax error handling or diagnostics page
+            HttpContext.Current.Items["LastError"] = ex;
+        }
     }
 
 }
