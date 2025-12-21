@@ -31,12 +31,21 @@
             EnableViewState="false" />
 
         <div class="customers-toolbar">
-            <asp:TextBox
-                ID="txtSearch"
-                runat="server"
-                Placeholder="Search by name or email"
-                oninput="onSearchChanged(this)"
-                onkeydown="return event.key !== 'Enter';" />
+
+            <div class="search-with-clear">
+                <asp:TextBox
+                    ID="txtSearch"
+                    runat="server"
+                    CssClass="form-control"
+                    Placeholder="Search by name or email"
+                    oninput="onSearchChanged(this)"
+                    onkeydown="return event.key !== 'Enter';" />
+                <button type="button"
+                        class="clear-search-btn"
+                        onclick="clearSearch('<%= txtSearch.ClientID %>')">
+                    &times;
+                </button>
+            </div>
 
             <asp:Button
                 ID="btnSearch"
@@ -49,9 +58,11 @@
                 runat="server"
                 AutoPostBack="true"
                 OnSelectedIndexChanged="ddlStatus_SelectedIndexChanged">
+
                 <asp:ListItem Text="All" Value="" />
                 <asp:ListItem Text="Active" Value="true" />
                 <asp:ListItem Text="Inactive" Value="false" />
+
             </asp:DropDownList>
         </div>
 
@@ -126,9 +137,36 @@
 
     <script type="text/javascript">
         function onSearchChanged(textbox) {
+            toggleClearButton(textbox);
+
             if (textbox.value === "") {
                 location.href = 'Customers.aspx';
             }
         }
+
+        function clearSearch(textBoxClientId) {
+            var tb = document.getElementById(textBoxClientId);
+            if (!tb) return;
+            tb.value = "";
+            toggleClearButton(tb);
+            location.href = 'Customers.aspx';
+        }
+
+        function toggleClearButton(textbox) {
+            var container = textbox.parentElement;
+            if (!container) return;
+
+            var btn = container.querySelector('.clear-search-btn');
+            if (!btn) return;
+
+            btn.style.display = textbox.value ? 'block' : 'none';
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            var tb = document.getElementById('<%= txtSearch.ClientID %>');
+            if (tb) {
+                toggleClearButton(tb);
+            }
+        });
     </script>
 </asp:Content>

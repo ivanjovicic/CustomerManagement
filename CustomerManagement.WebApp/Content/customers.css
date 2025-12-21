@@ -75,20 +75,47 @@
 .btn-edit {
     background: none;
     border: none;
-    color: #0d6efd; /* blaga bootstrap plava */
+    color: #0d6efd;
     padding: 0;
     font-weight: 500;
 }
 
 .btn-edit:hover {
         text-decoration: underline;
-        color: #0a58ca; /* malo tamnija na hover */
+        color: #0a58ca; 
 }
 .table-responsive {
     width: 100%;
-    overflow-x: auto; /* omogućava horizontalni scroll na manjim širinama */
+    overflow-x: auto; 
 }
 
 .table-responsive .table {
         width: 100%;
+}
+.search-with-clear {
+    position: relative;
+    display: inline-block;
+}
+
+.search-with-clear .form-control {
+    padding-right: 24px; /* space for clear button */
+}
+
+.clear-search-btn {
+    display: none; /* hidden by default; toggled via JS */
+    position: absolute;
+    right: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 1;
+    color: #888;
+    padding: 0;
+}
+
+.clear-search-btn:hover {
+    color: #555;
 }

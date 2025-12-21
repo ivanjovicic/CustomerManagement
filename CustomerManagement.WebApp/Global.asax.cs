@@ -38,7 +38,7 @@ namespace CustomerManagement.WebApp
             HttpContext.Current.Items["LastError"] = exception;
          
             Server.ClearError();
-            Response.Redirect("~/Error.aspx");
+            Server.Transfer("~/Error.aspx");
         }
 
         protected void Session_End(object sender, EventArgs e)
