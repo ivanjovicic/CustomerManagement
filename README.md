@@ -23,6 +23,11 @@ ASP.NET Web Forms application for managing customers, targeting .NET Framework 4
 - Centralized error handling (`Global.asax` + `Error.aspx`)
 - Cache invalidation via `CacheHelper.ClearCustomersCache()` on add/delete
 - Fallback demo data in `CustomerService` when the database is not reachable (UI stays functional even without DB)
+- When the database is not available, the app runs in read-only demo mode:
+  - `DatabaseInitializer` sets `AppState.IsDatabaseAvailable = false` on DB init failure
+  - `Customers.aspx` shows a warning banner and disables/hides Add/Delete actions
+  - `CustomerForm.aspx` loads customer data with `GetByIdAsync` fallback to demo data and disables the Save button
+  - Filtering by status and search by name/email do not update any persisted data (demo data is in-memory only)
 
 ## Technologies
 

@@ -81,6 +81,7 @@
     <Content Include="CustomerAdd.aspx" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AppState.cs" />
     <Compile Include="Helpers\CacheHelper.cs" />
     <Compile Include="CustomerForm.aspx.cs">
       <DependentUpon>CustomerForm.aspx</DependentUpon>

@@ -1,11 +1,6 @@
 ﻿using CustomerManagement.Business;
 using CustomerManagement.Models;
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Services.Description;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
@@ -17,6 +12,12 @@ namespace CustomerManagement.WebApp
         private CustomerService _service = new CustomerService();
         protected async void btnSave_Click(object sender, EventArgs e)
         {
+            if (!AppState.IsDatabaseAvailable)
+            {
+                // Read-only demo mode; block saving
+                return;
+            }
+
             if (!Page.IsValid)
                 return;
 
@@ -30,7 +31,6 @@ namespace CustomerManagement.WebApp
 
             await _service.AddAsync(customer);
 
-       
             CacheHelper.ClearCustomersCache();
 
             Response.Redirect("Customers.aspx", false);

@@ -55,14 +55,24 @@ namespace CustomerManagement.Business
         private List<Customer> GetDemoCustomers()
         {
             return new List<Customer>
-{
-    new Customer { Id = 1, FirstName = "Demo", LastName = "User", Email = "demo1@test.com", IsActive = true },
-    new Customer { Id = 2, FirstName = "Sample", LastName = "Customer", Email = "demo2@test.com", IsActive = false }
-};
+            {
+                new Customer { Id = 1, FirstName = "Demo", LastName = "User", Email = "demo1@test.com", IsActive = true },
+                new Customer { Id = 2, FirstName = "Sample", LastName = "Customer", Email = "demo2@test.com", IsActive = false }
+            };
         }
 
-
-        public async Task<Customer> GetByIdAsync(int id) => await _repository.GetByIdAsync(id);
+        public async Task<Customer> GetByIdAsync(int id)
+        {
+            try
+            {
+                return await _repository.GetByIdAsync(id);
+            }
+            catch
+            {
+                // Fallback to demo data when DB is not reachable
+                return GetDemoCustomers().FirstOrDefault(c => c.Id == id);
+            }
+        }
 
         public async Task AddAsync(Customer customer)
         {

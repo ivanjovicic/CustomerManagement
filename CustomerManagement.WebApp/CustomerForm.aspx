@@ -75,6 +75,7 @@
 
         <div class="form-actions">
             <asp:Button
+                ID="btnSave"
                 Text="Save"
                 CssClass="btn btn-primary"
                 runat="server"

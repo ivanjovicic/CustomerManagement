@@ -24,6 +24,12 @@
     <main>
         <h2>Customers</h2>
 
+        <asp:Label
+            ID="lblInfo"
+            runat="server"
+            CssClass="text-warning"
+            EnableViewState="false" />
+
         <div class="customers-toolbar">
             <asp:TextBox
                 ID="txtSearch"

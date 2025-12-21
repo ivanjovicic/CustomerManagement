@@ -34,12 +34,12 @@ BEGIN
     DECLARE @LastNames  TABLE (Id INT IDENTITY(1,1), Name NVARCHAR(100));
 
     INSERT INTO @FirstNames (Name) VALUES
-        (N'John'), (N'Jane'), (N'Mark'), (N'Anna'), (N'Peter'),
-        (N'Sara'), (N'Michael'), (N'Laura'), (N'David'), (N'Emma');
+        (N'Jovan'), (N'Marko'), (N'Zoran'), (N'Ana'), (N'Petar'),
+        (N'Sara'), (N'Mirko'), (N'Slavko'), (N'David'), (N'Ema');
 
     INSERT INTO @LastNames (Name) VALUES
-        (N'Doe'), (N'Smith'), (N'Brown'), (N'Johnson'), (N'Williams'),
-        (N'Taylor'), (N'Miller'), (N'Wilson'), (N'Moore'), (N'Clark');
+        (N'Jovic'), (N'Zivic'), (N'Slavnic'), (N'Markovic'), (N'Ivanovic'),
+        (N'Mitic'), (N'Ivic'), (N'Lukic'), (N'Zivkovic'), (N'Kokic');
 
     WHILE @i <= @max
     BEGIN

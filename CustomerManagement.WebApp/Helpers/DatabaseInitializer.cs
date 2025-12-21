@@ -53,7 +53,8 @@ namespace CustomerManagement.WebApp.Helpers
             }
             catch (Exception)
             {
-                // Swallow errors; the app will fall back to in-memory demo data if DB is not reachable.
+                // Mark app as running in demo/read-only mode
+                AppState.IsDatabaseAvailable = false;
             }
         }
     }

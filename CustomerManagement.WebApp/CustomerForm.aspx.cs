@@ -1,61 +1,85 @@
 ﻿using CustomerManagement.Business;
 using CustomerManagement.Models;
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
 using System.Web.UI;
-using System.Web.UI.WebControls;
 
 namespace CustomerManagement.WebApp
 {
     public partial class CustomerForm : System.Web.UI.Page
     {
-        private CustomerService _service = new CustomerService();
+        private readonly CustomerService _service = new CustomerService();
 
         protected async void Page_Load(object sender, EventArgs e)
         {
-            if (!IsPostBack && Request.QueryString["id"] != null)
+            if (!IsPostBack)
             {
-                int id = int.Parse(Request.QueryString["id"]);
+                if (int.TryParse(Request.QueryString["id"], out int id))
+                {
+                    await LoadCustomerAsync(id);
+                }
+                else
+                {
+                    Response.Redirect("Customers.aspx");
+                }
+            }
+
+            if (!AppState.IsDatabaseAvailable)
+            {
+                // Disable save in demo/read-only mode
+                btnSave.Enabled = false;
+            }
+        }
+
+        private async Task LoadCustomerAsync(int id)
+        {
+            try
+            {
                 var customer = await _service.GetByIdAsync(id);
+                if (customer == null)
+                {
+                    Response.Redirect("Customers.aspx");
+                    return;
+                }
 
                 txtFirstName.Text = customer.FirstName;
                 txtLastName.Text = customer.LastName;
                 txtEmail.Text = customer.Email;
                 chkActive.Checked = customer.IsActive;
             }
+            catch
+            {
+                // If something goes wrong (e.g., DB error), return to list
+                Response.Redirect("Customers.aspx");
+            }
         }
 
         protected async void Save_Click(object sender, EventArgs e)
         {
+            if (!AppState.IsDatabaseAvailable)
+            {
+                // Read-only demo mode
+                return;
+            }
+
+            if (!int.TryParse(Request.QueryString["id"], out int id))
+            {
+                Response.Redirect("Customers.aspx");
+                return;
+            }
+
             var customer = new Customer
             {
-                FirstName = txtFirstName.Text,
-                LastName = txtLastName.Text,
-                Email = txtEmail.Text,
+                Id = id,
+                FirstName = txtFirstName.Text.Trim(),
+                LastName = txtLastName.Text.Trim(),
+                Email = txtEmail.Text.Trim(),
                 IsActive = chkActive.Checked
             };
 
-            if (Request.QueryString["id"] != null)
-            {
-                customer.Id = int.Parse(Request.QueryString["id"]);
-               await _service.UpdateAsync(customer);
-            }
-            else
-            {
-                await _service.AddAsync(customer);
-            }
+            await _service.UpdateAsync(customer);
 
-            foreach (DictionaryEntry item in HttpContext.Current.Cache)
-            {
-                if (item.Key.ToString().StartsWith("customers_"))
-                {
-                    HttpContext.Current.Cache.Remove(item.Key.ToString());
-                }
-            }
+            CacheHelper.ClearCustomersCache();
 
             Response.Redirect("Customers.aspx");
         }

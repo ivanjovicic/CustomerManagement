@@ -1,7 +1,6 @@
 ﻿using CustomerManagement.Business;
 using CustomerManagement.Models;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
@@ -26,6 +25,20 @@ namespace CustomerManagement.WebApp
                 {
                     HandleError(ex, "Error loading customers on initial page load.");
                 }
+            }
+
+            // If DB is not available, app runs in demo/read-only mode
+            if (!AppState.IsDatabaseAvailable)
+            {
+                btnAddCustomer.Enabled = false;
+
+                // Hide delete column (last column is Delete template field)
+                if (gvCustomers.Columns.Count > 0)
+                {
+                    gvCustomers.Columns[gvCustomers.Columns.Count - 1].Visible = false;
+                }
+
+                lblInfo.Text = "Database is not available. Application is running in read-only demo mode. Add/Edit/Delete are disabled.";
             }
         }
 
@@ -101,6 +114,12 @@ namespace CustomerManagement.WebApp
 
         protected async void gvCustomers_RowDeleting(object sender, GridViewDeleteEventArgs e)
         {
+            if (!AppState.IsDatabaseAvailable)
+            {
+                // Read-only demo mode; ignore delete
+                return;
+            }
+
             try
             {
                 int customerId = Convert.ToInt32(gvCustomers.DataKeys[e.RowIndex].Value);
@@ -136,12 +155,8 @@ namespace CustomerManagement.WebApp
 
         private void HandleError(Exception ex, string message)
         {
-            // Centralized place to log and optionally show a friendly message.
             Debug.WriteLine($"{message} {ex}");
-
-            // Optionally store for Global.asax error handling or diagnostics page
             HttpContext.Current.Items["LastError"] = ex;
         }
     }
-
 }
