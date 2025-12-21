@@ -10,12 +10,21 @@ ASP.NET Web Forms application for managing customers, targeting .NET Framework 4
 - `CustomerManagement.Models` – domain models (`Customer`)
 - `CustomerManagement.Tests` – unit tests for Business and Data layers
 
+## Architecture
+
+The application follows a layered architecture:
+- Web layer handles UI and user interaction
+- Business layer contains application logic and caching
+- Data layer handles database access via ADO.NET
+- Models define domain entities
+
 ## Features
 
 - Customer list (`Customers.aspx`)
-  - Search by name/email
+  - Search by name or email
   - Filter by status (Active / Inactive / All)
-  - Add, edit, delete customers
+  - Add, edit, and delete customers
+  - SQL paging and async data access
   - Results cached per search + status for 5 minutes
 - Add customer (`CustomerAdd.aspx`)
 - Edit customer (`CustomerForm.aspx`)
@@ -27,7 +36,8 @@ ASP.NET Web Forms application for managing customers, targeting .NET Framework 4
 
 - ASP.NET Web Forms (.NET Framework 4.8.1)
 - C#
-- SQL Server LocalDB (`(localdb)\\MSSQLLocalDB`)
+- SQL Server LocalDB (`(localdb)\MSSQLLocalDB`)
+- ADO.NET (async)
 - MSTest (unit tests)
 
 ## Database
@@ -40,28 +50,3 @@ Connection string (`CustomerManagement.WebApp/Web.config`):
        connectionString="Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=CustomerTest;Integrated Security=True"
        providerName="System.Data.SqlClient" />
 </connectionStrings>
-```
-
-Expected database: `CustomerTest` with table `dbo.Customers`.
-
-### Database initialization
-
-To create the `CustomerTest` database and the `dbo.Customers` table locally, run the script:
-
-- `CreateDatabaseAndCustomersTable.sql`
-
-Run it in SQL Server Management Studio against your `(localdb)\MSSQLLocalDB` instance.
-
-## How to Run
-
-1. Open the solution `CustomerManagementSystem.sln` in Visual Studio.
-2. Set `CustomerManagement.WebApp` as the startup project.
-3. Ensure LocalDB instance `(localdb)\\MSSQLLocalDB` is running and the `CustomerTest` database exists.
-4. Press `F5` to run.
-5. The application will open on `Customers.aspx` (configured as default document in `Web.config`).
-
-## Tests
-
-1. Open Test Explorer in Visual Studio.
-2. Select the `CustomerManagement.Tests` project.
-3. Run all tests (`Run All`).
