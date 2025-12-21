@@ -17,11 +17,12 @@ ASP.NET Web Forms application for managing customers, targeting .NET Framework 4
   - Filter by status (Active / Inactive / All)
   - Add, edit, delete customers
   - Results cached per search + status for 5 minutes
+  - New customers appear on the last page because data is ordered by `Id` ascending
 - Add customer (`CustomerAdd.aspx`)
 - Edit customer (`CustomerForm.aspx`)
 - Centralized error handling (`Global.asax` + `Error.aspx`)
 - Cache invalidation via `CacheHelper.ClearCustomersCache()` on add/delete
-- Fallback demo data in `CustomerService` when the database is not reachable
+- Fallback demo data in `CustomerService` when the database is not reachable (UI stays functional even without DB)
 
 ## Technologies
 
