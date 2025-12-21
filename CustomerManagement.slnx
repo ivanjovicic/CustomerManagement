@@ -1,4 +1,7 @@
 <Solution>
+  <Folder Name="/Solution Items/">
+    <File Path="README.md" />
+  </Folder>
   <Project Path="CustomerManagement.Business/CustomerManagement.Business.csproj" Id="8a5a26c0-b54c-4d55-a43d-a2d4b4accef4" />
   <Project Path="CustomerManagement.Data/CustomerManagement.Data.csproj" Id="813d4b4b-2d45-438c-9084-969237f7738d" />
   <Project Path="CustomerManagement.Models/CustomerManagement.Models.csproj" Id="8818165b-6c40-4d21-bf2a-e9414d292593" />
