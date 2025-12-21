@@ -21,6 +21,12 @@
         runat="server"
         CssClass="text-danger" />
 
+    <asp:Label
+    ID="lblError"
+    runat="server"
+    CssClass="text-danger"
+    EnableViewState="false" />
+
     <div class="customer-form">
         <label>First Name</label>
         <asp:TextBox ID="txtFirstName" runat="server" CssClass="form-control" />

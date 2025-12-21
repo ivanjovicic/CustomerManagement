@@ -29,12 +29,23 @@ namespace CustomerManagement.WebApp
                 IsActive = bool.Parse(ddlStatus.SelectedValue)
             };
 
-            await _service.AddAsync(customer);
+            try
+            {
+                await _service.AddAsync(customer);
 
-            CacheHelper.ClearCustomersCache();
+                CacheHelper.ClearCustomersCache();
 
-            Response.Redirect("Customers.aspx", false);
-            Context.ApplicationInstance.CompleteRequest();
+                Response.Redirect("Customers.aspx", false);
+                Context.ApplicationInstance.CompleteRequest();
+            }
+            catch (InvalidOperationException ex)
+            {
+                lblError.Text = ex.Message;
+            }
+            catch (Exception)
+            {
+                lblError.Text = "An error occurred while saving the customer.";
+            }
         }
 
         protected void btnCancel_Click(object sender, EventArgs e)

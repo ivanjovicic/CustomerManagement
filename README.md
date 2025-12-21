@@ -81,3 +81,8 @@ You can also run `App_Data/Sql/CreateDatabaseAndCustomersTable.sql` manually in 
 - Authentication/authorization: restrict access to customer management pages (e.g., only for admin users).
 - Export: add export of the filtered/sorted customer list to CSV/Excel.
 - Improved error diagnostics in demo mode: optionally show a more descriptive message on `Error.aspx` in development (e.g., that the DB is not configured).
+
+## Validation
+
+- Required fields and basic email regex on forms
+- Duplicate email protection when adding a new customer (service throws and UI shows a friendly error message)

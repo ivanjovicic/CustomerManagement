@@ -76,6 +76,19 @@ namespace CustomerManagement.Business
 
         public async Task AddAsync(Customer customer)
         {
+            if (customer == null) throw new ArgumentNullException(nameof(customer));
+
+            if (string.IsNullOrWhiteSpace(customer.Email))
+                throw new ArgumentException("Email is required.", nameof(customer));
+
+            var allCustomers = await _repository.GetAllAsync();
+            bool emailExists = allCustomers
+                .Any(c => c.Email.Equals(customer.Email, StringComparison.OrdinalIgnoreCase));
+
+            if (emailExists)
+            {
+                throw new InvalidOperationException("A customer with the same email address already exists.");
+            }
             await _repository.AddAsync(customer);
         }
 
