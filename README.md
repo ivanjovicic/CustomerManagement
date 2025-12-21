@@ -67,6 +67,21 @@ You can also run `App_Data/Sql/CreateDatabaseAndCustomersTable.sql` manually in 
 4. Press `F5` to run.
 5. The application will open on `Customers.aspx` (configured as default document in `Web.config`).
 
+
+## Business Logic & Validation
+
+- Centralized customer operations in `CustomerService` (list, filter, get by id, add, update, delete)
+- Search by first name, last name, or email (case-insensitive)
+- Optional filtering by status (`IsActive`) via the status dropdown (`All / Active / Inactive`)
+- Fallback to in-memory demo data when the database is not reachable (`GetDemoCustomers`)
+- Duplicate email protection on create: `CustomerService.AddAsync` checks for existing email and throws an `InvalidOperationException` that is surfaced as a friendly error in the UI
+
+## Validation
+
+- Required fields and basic email regex on forms
+- Duplicate email protection when adding a new customer (service throws and UI shows a friendly error message)
+
+
 ## Tests
 
 1. Open Test Explorer in Visual Studio.
@@ -81,16 +96,3 @@ You can also run `App_Data/Sql/CreateDatabaseAndCustomersTable.sql` manually in 
 - Authentication/authorization: restrict access to customer management pages (e.g., only for admin users).
 - Export: add export of the filtered/sorted customer list to CSV/Excel.
 - Improved error diagnostics in demo mode: optionally show a more descriptive message on `Error.aspx` in development (e.g., that the DB is not configured).
-
-## Business Logic & Validation
-
-- Centralized customer operations in `CustomerService` (list, filter, get by id, add, update, delete)
-- Search by first name, last name, or email (case-insensitive)
-- Optional filtering by status (`IsActive`) via the status dropdown (`All / Active / Inactive`)
-- Fallback to in-memory demo data when the database is not reachable (`GetDemoCustomers`)
-- Duplicate email protection on create: `CustomerService.AddAsync` checks for existing email and throws an `InvalidOperationException` that is surfaced as a friendly error in the UI
-
-## Validation
-
-- Required fields and basic email regex on forms
-- Duplicate email protection when adding a new customer (service throws and UI shows a friendly error message)
