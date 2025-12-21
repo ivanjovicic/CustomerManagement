@@ -38,7 +38,12 @@ namespace CustomerManagement.WebApp
                     gvCustomers.Columns[gvCustomers.Columns.Count - 1].Visible = false;
                 }
 
-                lblInfo.Text = "Database is not available. Application is running in read-only demo mode. Add/Edit/Delete are disabled.";
+                // Disable search and filtering in demo mode
+                txtSearch.Enabled = false;
+                btnSearch.Enabled = false;
+                ddlStatus.Enabled = false;
+
+                lblInfo.Text = "Database is not available. Application is running in read-only demo mode. Add/Edit/Delete and filtering/search are disabled.";
             }
         }
 

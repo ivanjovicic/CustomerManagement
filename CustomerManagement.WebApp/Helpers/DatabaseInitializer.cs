@@ -14,8 +14,15 @@ namespace CustomerManagement.WebApp.Helpers
             {
                 var cs = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
 
-                // Short-circuit if the database already exists
-                using (var conn = new SqlConnection(cs))
+                
+                var builder = new SqlConnectionStringBuilder(cs)
+                {
+                    InitialCatalog = string.Empty
+                };
+                var serverConnectionString = builder.ConnectionString;
+
+               
+                using (var conn = new SqlConnection(serverConnectionString))
                 using (var checkCmd = new SqlCommand("SELECT DB_ID('CustomerTest')", conn))
                 {
                     conn.Open();
@@ -38,7 +45,7 @@ namespace CustomerManagement.WebApp.Helpers
                 // Split batches on GO separators (on their own line)
                 var batches = script.Split(new[] { "\r\nGO\r\n", "\nGO\n", "\r\nGO\n", "\nGO\r\n" }, StringSplitOptions.RemoveEmptyEntries);
 
-                using (var conn = new SqlConnection(cs))
+                using (var conn = new SqlConnection(serverConnectionString))
                 {
                     conn.Open();
 
