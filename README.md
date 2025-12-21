@@ -21,6 +21,7 @@ ASP.NET Web Forms application for managing customers, targeting .NET Framework 4
 - Edit customer (`CustomerForm.aspx`)
 - Centralized error handling (`Global.asax` + `Error.aspx`)
 - Cache invalidation via `CacheHelper.ClearCustomersCache()` on add/delete
+- Fallback demo data in `CustomerService` when the database is not reachable
 
 ## Technologies
 

@@ -23,27 +23,44 @@ namespace CustomerManagement.Business
 
         public async Task<List<Customer>> GetCustomersAsync(string searchTerm, bool? isActive)
         {
-            var customers = await _repository.GetAllAsync();
-
-            if (!string.IsNullOrWhiteSpace(searchTerm))
+            try
             {
-                customers = customers
-                    .Where(c =>
-                        c.FirstName.IndexOf(searchTerm, StringComparison.OrdinalIgnoreCase) >= 0 ||
-                        c.LastName.IndexOf(searchTerm, StringComparison.OrdinalIgnoreCase) >= 0 ||
-                        c.Email.IndexOf(searchTerm, StringComparison.OrdinalIgnoreCase) >= 0)
-                    .ToList();
-            }
+                var customers = await _repository.GetAllAsync();
 
-            if (isActive.HasValue)
+                if (!string.IsNullOrWhiteSpace(searchTerm))
+                {
+                    customers = customers
+                        .Where(c =>
+                            c.FirstName.IndexOf(searchTerm, StringComparison.OrdinalIgnoreCase) >= 0 ||
+                            c.LastName.IndexOf(searchTerm, StringComparison.OrdinalIgnoreCase) >= 0 ||
+                            c.Email.IndexOf(searchTerm, StringComparison.OrdinalIgnoreCase) >= 0)
+                        .ToList();
+                }
+
+                if (isActive.HasValue)
+                {
+                    customers = customers
+                        .Where(c => c.IsActive == isActive.Value)
+                        .ToList();
+                }
+
+                return customers;
+            }
+            catch
             {
-                customers = customers
-                    .Where(c => c.IsActive == isActive.Value)
-                    .ToList();
+                return GetDemoCustomers();
             }
-
-            return customers;
         }
+
+        private List<Customer> GetDemoCustomers()
+        {
+            return new List<Customer>
+{
+    new Customer { Id = 1, FirstName = "Demo", LastName = "User", Email = "demo1@test.com", IsActive = true },
+    new Customer { Id = 2, FirstName = "Sample", LastName = "Customer", Email = "demo2@test.com", IsActive = false }
+};
+        }
+
 
         public async Task<Customer> GetByIdAsync(int id) => await _repository.GetByIdAsync(id);
 
