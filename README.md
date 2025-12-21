@@ -41,7 +41,15 @@ Connection string (`CustomerManagement.WebApp/Web.config`):
 </connectionStrings>
 ```
 
-Expected database: `CustomerTest` with table `dbo.Customers` (created via SQL script in SSMS).
+Expected database: `CustomerTest` with table `dbo.Customers`.
+
+### Database initialization
+
+To create the `CustomerTest` database and the `dbo.Customers` table locally, run the script:
+
+- `CreateDatabaseAndCustomersTable.sql`
+
+Run it in SQL Server Management Studio against your `(localdb)\MSSQLLocalDB` instance.
 
 ## How to Run
 
