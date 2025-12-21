@@ -72,3 +72,12 @@ You can also run `App_Data/Sql/CreateDatabaseAndCustomersTable.sql` manually in 
 1. Open Test Explorer in Visual Studio.
 2. Select the `CustomerManagement.Tests` project.
 3. Run all tests (`Run All`).
+
+## TODO / Future Improvements
+
+- Multi-select delete: allow selecting multiple customers in the grid and deleting them in a single action.
+- Inline edit in the grid: enable editing certain fields (e.g., `IsActive`) directly in `Customers.aspx` without navigating to the edit form.
+- Server-side paging & sorting: move paging/sorting from in-memory to database-side for better performance on large datasets.
+- Authentication/authorization: restrict access to customer management pages (e.g., only for admin users).
+- Export: add export of the filtered/sorted customer list to CSV/Excel.
+- Improved error diagnostics in demo mode: optionally show a more descriptive message on `Error.aspx` in development (e.g., that the DB is not configured).

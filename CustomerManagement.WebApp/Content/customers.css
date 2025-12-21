@@ -110,10 +110,10 @@
     border: none;
     background: transparent;
     cursor: pointer;
-    font-size: 14px;
+    font-size: 18px; /* increased size for better visibility */
     line-height: 1;
     color: #888;
-    padding: 0;
+    padding: 0 2px;
 }
 
 .clear-search-btn:hover {

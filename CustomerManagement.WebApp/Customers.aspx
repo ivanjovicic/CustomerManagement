@@ -83,6 +83,8 @@
                         DataKeyNames="Id"
                         AllowPaging="true"
                         PageSize="10"
+                        AllowSorting="true"
+                        OnSorting="gvCustomers_Sorting"
                         OnPageIndexChanging="gvCustomers_PageIndexChanging"
                         OnRowDeleting="gvCustomers_RowDeleting">
 
@@ -96,11 +98,11 @@
                             HorizontalAlign="Center" />
 
                         <Columns>
-                            <asp:BoundField DataField="Id" HeaderText="ID" />
-                            <asp:BoundField DataField="FirstName" HeaderText="First Name" />
-                            <asp:BoundField DataField="LastName" HeaderText="Last Name" />
-                            <asp:BoundField DataField="Email" HeaderText="Email" />
-                            <asp:CheckBoxField DataField="IsActive" HeaderText="Active" />
+                            <asp:BoundField DataField="Id" HeaderText="ID" SortExpression="Id" />
+                            <asp:BoundField DataField="FirstName" HeaderText="First Name" SortExpression="FirstName" />
+                            <asp:BoundField DataField="LastName" HeaderText="Last Name" SortExpression="LastName" />
+                            <asp:BoundField DataField="Email" HeaderText="Email" SortExpression="Email" />
+                            <asp:CheckBoxField DataField="IsActive" HeaderText="Active" SortExpression="IsActive" />
 
                             <asp:HyperLinkField
                                 Text="Edit"

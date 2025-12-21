@@ -3,6 +3,7 @@ using CustomerManagement.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.UI.WebControls;
@@ -12,6 +13,18 @@ namespace CustomerManagement.WebApp
     public partial class Customers : System.Web.UI.Page
     {
         private readonly CustomerService _service = new CustomerService();
+
+        private string SortExpression
+        {
+            get => ViewState["SortExpression"] as string ?? "Id";
+            set => ViewState["SortExpression"] = value;
+        }
+
+        private SortDirection SortDirection
+        {
+            get => ViewState["SortDirection"] is SortDirection dir ? dir : SortDirection.Ascending;
+            set => ViewState["SortDirection"] = value;
+        }
 
         protected async void Page_Load(object sender, EventArgs e)
         {
@@ -32,13 +45,11 @@ namespace CustomerManagement.WebApp
             {
                 btnAddCustomer.Enabled = false;
 
-                // Hide delete column (last column is Delete template field)
                 if (gvCustomers.Columns.Count > 0)
                 {
                     gvCustomers.Columns[gvCustomers.Columns.Count - 1].Visible = false;
                 }
 
-                // Disable search and filtering in demo mode
                 txtSearch.Enabled = false;
                 btnSearch.Enabled = false;
                 ddlStatus.Enabled = false;
@@ -101,6 +112,8 @@ namespace CustomerManagement.WebApp
                         System.Web.Caching.Cache.NoSlidingExpiration);
                 }
 
+                customers = ApplySorting(customers);
+
                 gvCustomers.DataSource = customers;
                 gvCustomers.DataBind();
 
@@ -115,6 +128,51 @@ namespace CustomerManagement.WebApp
                 HandleError(ex, "Error loading customers.");
                 lblLoadTime.Text = "An error occurred while loading customers.";
             }
+        }
+
+        private List<Customer> ApplySorting(List<Customer> customers)
+        {
+            switch (SortExpression)
+            {
+                case "FirstName":
+                    return SortDirection == SortDirection.Ascending
+                        ? customers.OrderBy(c => c.FirstName).ToList()
+                        : customers.OrderByDescending(c => c.FirstName).ToList();
+                case "LastName":
+                    return SortDirection == SortDirection.Ascending
+                        ? customers.OrderBy(c => c.LastName).ToList()
+                        : customers.OrderByDescending(c => c.LastName).ToList();
+                case "Email":
+                    return SortDirection == SortDirection.Ascending
+                        ? customers.OrderBy(c => c.Email).ToList()
+                        : customers.OrderByDescending(c => c.Email).ToList();
+                case "IsActive":
+                    return SortDirection == SortDirection.Ascending
+                        ? customers.OrderBy(c => c.IsActive).ToList()
+                        : customers.OrderByDescending(c => c.IsActive).ToList();
+                case "Id":
+                default:
+                    return SortDirection == SortDirection.Ascending
+                        ? customers.OrderBy(c => c.Id).ToList()
+                        : customers.OrderByDescending(c => c.Id).ToList();
+            }
+        }
+
+        protected async void gvCustomers_Sorting(object sender, GridViewSortEventArgs e)
+        {
+            if (SortExpression == e.SortExpression)
+            {
+                SortDirection = SortDirection == SortDirection.Ascending
+                    ? SortDirection.Descending
+                    : SortDirection.Ascending;
+            }
+            else
+            {
+                SortExpression = e.SortExpression;
+                SortDirection = SortDirection.Ascending;
+            }
+
+            await LoadCustomersAsync();
         }
 
         protected async void gvCustomers_RowDeleting(object sender, GridViewDeleteEventArgs e)
