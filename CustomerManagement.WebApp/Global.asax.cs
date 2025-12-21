@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Web;
 using System.Web.UI;
+using CustomerManagement.WebApp.Helpers;
 
 namespace CustomerManagement.WebApp
 {
@@ -10,6 +11,7 @@ namespace CustomerManagement.WebApp
         protected void Application_Start(object sender, EventArgs e)
         {
             ValidationSettings.UnobtrusiveValidationMode = UnobtrusiveValidationMode.None;
+            DatabaseInitializer.RunInitScript();
         }
 
         protected void Session_Start(object sender, EventArgs e)
