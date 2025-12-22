@@ -26,10 +26,11 @@ namespace CustomerManagement.WebApp
             set => ViewState["SortDirection"] = value;
         }
 
-        protected async void Page_Load(object sender, EventArgs e)
+        protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
             {
+                RegisterAsyncTask(new System.Web.UI.PageAsyncTask(async () => { 
                 try
                 {
                     await LoadCustomersAsync();
@@ -38,6 +39,7 @@ namespace CustomerManagement.WebApp
                 {
                     HandleError(ex, "Error loading customers on initial page load.");
                 }
+                }));
             }
 
             // If DB is not available, app runs in demo/read-only mode
