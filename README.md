@@ -4,11 +4,11 @@ ASP.NET Web Forms application for managing customers, targeting .NET Framework 4
 
 ## Projects
 
-- `CustomerManagement.WebApp` ? Web Forms UI application
-- `CustomerManagement.Business` ? business logic (`CustomerService`, `CacheHelper`)
-- `CustomerManagement.Data` ? data access (`CustomerRepository`, `ICustomerRepository`)
-- `CustomerManagement.Models` ? domain models (`Customer`)
-- `CustomerManagement.Tests` ? unit tests for Business and Data layers
+- `CustomerManagement.WebApp` - Web Forms UI application
+- `CustomerManagement.Business` - business logic (`CustomerService`, `CacheHelper`)
+- `CustomerManagement.Data` - data access (`CustomerRepository`, `ICustomerRepository`)
+- `CustomerManagement.Models` - domain models (`Customer`)
+- `CustomerManagement.Tests` - unit tests for Business and Data layers
 
 ## Features
 
