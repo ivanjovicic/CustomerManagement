@@ -16,14 +16,25 @@ namespace CustomerManagement.WebApp
             {
                 RegisterAsyncTask(new PageAsyncTask(async () =>
                 {
-                    if (int.TryParse(Request.QueryString["id"], out int id))
+                    try
                     {
-                        await LoadCustomerAsync(id);
+                        if (int.TryParse(Request.QueryString["id"], out int id))
+                        {
+                            await LoadCustomerAsync(id);
+                        }
+                        else
+                        {
+                            Response.Redirect("Customers.aspx", false);
+                            Context.ApplicationInstance.CompleteRequest();
+                            return;
+                        }
                     }
-                    else
+                    catch (Exception)
                     {
-                        Response.Redirect("Customers.aspx");
+
+                        Console.WriteLine("Error loading customer data.");
                     }
+                    
                 }));
             }
 
