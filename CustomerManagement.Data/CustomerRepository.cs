@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
@@ -59,7 +60,7 @@ namespace CustomerManagement.Data
                 @"SELECT Id, FirstName, LastName, Email, IsActive
           FROM Customers WHERE Id = @Id", conn))
             {
-                cmd.Parameters.AddWithValue("@Id", id);
+                cmd.Parameters.Add("@Id", SqlDbType.Int).Value = id;
                 await conn.OpenAsync().ConfigureAwait(false);
 
                 using (var reader = await cmd.ExecuteReaderAsync().ConfigureAwait(false))
@@ -87,10 +88,10 @@ namespace CustomerManagement.Data
                 @"INSERT INTO Customers (FirstName, LastName, Email, IsActive)
           VALUES (@FirstName, @LastName, @Email, @IsActive)", conn))
             {
-                cmd.Parameters.AddWithValue("@FirstName", customer.FirstName);
-                cmd.Parameters.AddWithValue("@LastName", customer.LastName);
-                cmd.Parameters.AddWithValue("@Email", customer.Email);
-                cmd.Parameters.AddWithValue("@IsActive", customer.IsActive);
+                cmd.Parameters.Add("@FirstName", SqlDbType.NVarChar, 100).Value = customer.FirstName;
+                cmd.Parameters.Add("@LastName", SqlDbType.NVarChar, 100).Value = customer.LastName;
+                cmd.Parameters.Add("@Email", SqlDbType.NVarChar, 255).Value = customer.Email;
+                cmd.Parameters.Add("@IsActive", SqlDbType.Bit).Value = customer.IsActive;
 
                 await conn.OpenAsync().ConfigureAwait(false);
                 await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
@@ -108,11 +109,11 @@ namespace CustomerManagement.Data
                       IsActive = @IsActive
                   WHERE Id = @Id", conn))
             {
-                cmd.Parameters.AddWithValue("@Id", customer.Id);
-                cmd.Parameters.AddWithValue("@FirstName", customer.FirstName);
-                cmd.Parameters.AddWithValue("@LastName", customer.LastName);
-                cmd.Parameters.AddWithValue("@Email", customer.Email);
-                cmd.Parameters.AddWithValue("@IsActive", customer.IsActive);
+                cmd.Parameters.Add("@Id", SqlDbType.Int).Value = customer.Id;
+                cmd.Parameters.Add("@FirstName", SqlDbType.NVarChar, 100).Value = customer.FirstName;
+                cmd.Parameters.Add("@LastName", SqlDbType.NVarChar, 100).Value = customer.LastName;
+                cmd.Parameters.Add("@Email", SqlDbType.NVarChar, 255).Value = customer.Email;
+                cmd.Parameters.Add("@IsActive", SqlDbType.Bit).Value = customer.IsActive;
 
                 await conn.OpenAsync().ConfigureAwait(false);
                 await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
@@ -125,7 +126,7 @@ namespace CustomerManagement.Data
             using (var cmd = new SqlCommand(
                 "DELETE FROM Customers WHERE Id = @Id", conn))
             {
-                cmd.Parameters.AddWithValue("@Id", id);
+                cmd.Parameters.Add("@Id", SqlDbType.Int).Value = id;
                 await conn.OpenAsync().ConfigureAwait(false);
                 await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
             }
