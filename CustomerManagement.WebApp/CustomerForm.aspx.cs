@@ -10,18 +10,32 @@ namespace CustomerManagement.WebApp
     {
         private readonly CustomerService _service = new CustomerService();
 
-        protected async void Page_Load(object sender, EventArgs e)
+        protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
             {
-                if (int.TryParse(Request.QueryString["id"], out int id))
+                RegisterAsyncTask(new PageAsyncTask(async () =>
                 {
-                    await LoadCustomerAsync(id);
-                }
-                else
-                {
-                    Response.Redirect("Customers.aspx");
-                }
+                    try
+                    {
+                        if (int.TryParse(Request.QueryString["id"], out int id))
+                        {
+                            await LoadCustomerAsync(id);
+                        }
+                        else
+                        {
+                            Response.Redirect("Customers.aspx", false);
+                            Context.ApplicationInstance.CompleteRequest();
+                            return;
+                        }
+                    }
+                    catch (Exception)
+                    {
+
+                        Console.WriteLine("Error loading customer data.");
+                    }
+                    
+                }));
             }
 
             if (!AppState.IsDatabaseAvailable)
